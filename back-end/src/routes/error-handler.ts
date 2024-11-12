@@ -20,7 +20,7 @@ export const errorHandler = (
         status: "Error",
         message: "file size is too large",
         error: {
-          key: "adhaarFrontFile",
+          key: err.field,
           message: "please upload image less than 4 mb",
         },
       });

@@ -19,7 +19,6 @@ function App() {
   const [adhaarBackFile, setAdhaarBackFile] = useState<File | null>(null)
   const [errors, setErrors] = useState<{ key: fileType, message: string } | null>(null)
 
-  console.log(errors)
   const updateAdhaarFile = (file: File, adhaarImage: ImageUploadProps['adhaarImage']) => {
     if (adhaarImage !== 'back' && adhaarImage !== 'front') {
       return

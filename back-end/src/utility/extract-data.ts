@@ -46,7 +46,6 @@ export function extractAdress(ocrText: string) {
 }
 export function extractName(ocrText: string) {
   const nameRegex = /([a-zA-Z]{4,})(?=\s+DOB\b)/;
-  console.log(ocrText.match(nameRegex));
   return extractData(ocrText.match(nameRegex));
 }
 

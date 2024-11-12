@@ -35,7 +35,6 @@ export const ocrController = async (req:Request,res:Response,next:NextFunction) 
 
          
         const data = generateData(text1,text2)
-        console.log(data)
         await worker.terminate();
 
         removeFiles(adhaarFrontFile[0].path)

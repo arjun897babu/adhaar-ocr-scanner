@@ -22,7 +22,7 @@ const Home = () => {
                     Adhaar scan
                 </div>
             </header>
-            <section className="flex flex-col items-center min-h-screen">
+            <section className="flex flex-col items-center h-full justify-center sm:justify-normal min-h-screen">
                 <div className=" flex max-w-2xl flex-col items-center pb:10 sm:pb-16  text-center p-3  ">
                     <h1 className="mb-8 text-5xl sm:text-6xl font-bold  text-indigo-500">
                         Quick & Easy Aadhaar Data Extraction
@@ -80,10 +80,10 @@ const Home = () => {
                             <FaInfoCircle />
                         </span>
                         <div className="flex flex-col gap-2">
-                            <h3 className="text-gray-400 uppercase">step 3</h3>
+                            <h3 className="text-gray-400 uppercase">step 2</h3>
                             <h3 className="mb-7 capitalize text-lg font-bold text-indigo-500 md:text-xl">
                                 extract data
-                            </h3>
+                           </h3>
                         </div>
                         <BsClipboard2DataFill className="absolute right-4 top-8 text-indigo-500" size={30} />
                         <p className="text-gray-500 leading-relaxed text-xs sm:text-lg">

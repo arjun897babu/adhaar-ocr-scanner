@@ -27,13 +27,11 @@ export const errorHandler = (
     }
   }
   if (err instanceof CustomError) {
+    const error = err.field ?? err.err;
     return res.status(err.statusCode).json({
       status: "error",
       message: err.message,
-      error: {
-        key: err.field,
-        message: err.message,
-      },
+      error
     });
   }
   return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({

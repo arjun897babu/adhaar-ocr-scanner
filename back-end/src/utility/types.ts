@@ -9,3 +9,5 @@ export interface MulterRequst extends Request {
     backImage: string;
   };
 }
+
+export type ErrorObj = {[fieldName: string]: string} 

@@ -27,19 +27,16 @@ export const errorHandler = (
     }
   }
   if (err instanceof CustomError) {
-    const error = err.field ?? err.err;
+    const error = err.field ? { [err.field]: err.message } : err.err;
     return res.status(err.statusCode).json({
       status: "error",
       message: err.message,
-      error
+      error,
     });
   }
   return res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json({
     status: "error",
     message: "Internal server error",
-    error: {
-      key: "server",
-      message: "internal server error",
-    },
+    error: { common: "Internal server error" },
   });
 };

@@ -67,10 +67,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ adhaarImage, updateAdhaar }) 
               </p>
             </label>
           ) : (
-            <div className="sm:h-32 sm:w-72 ">
+            <div className="h-60 w-48 sm:h-32 sm:w-64  ">
               <img
                 src={imageSrc}
-                alt={`adhaar ${adhaarImage} preview`}//adhaar front or back side image
+                alt={`adhaar ${adhaarImage} preview`}
                 className="w-full h-full object-scale-down"
               />
             </div>

@@ -6,7 +6,7 @@ import OcrResult from './pages/ocr-result/OcrResult'
 import { ImageUploadProps } from './component/imageUpload/type'
 import { server } from './service/axios'
 import { OCRData } from './pages/ocr-result/types'
-import { handleAxiosError, isErrorResponse } from './utils/validation'
+import { handleAxiosError, isErrorResponse, validateFiles } from './utils/validation'
 import { AxiosResponse, HttpStatusCode } from 'axios'
 import { ApiResponse } from './service/type'
 
@@ -20,15 +20,30 @@ function App() {
   const [errors, setErrors] = useState<{ key: fileType, message: string } | null>(null)
 
   const updateAdhaarFile = (file: File, adhaarImage: ImageUploadProps['adhaarImage']) => {
-    if (adhaarImage !== 'back' && adhaarImage !== 'front') {
-      return
+    if (adhaarImage !== 'back' && adhaarImage !== 'front') return;
+
+    const fileType: fileType = adhaarImage === 'front' ?
+      'adhaarFrontFile'
+      : 'adhaarBackFile';
+
+    const setFile = adhaarImage === 'front' ?
+      setAdhaarFrontFile
+      : setAdhaarBackFile;
+
+    const error = validateFiles(file, fileType);
+
+    if (error) {
+      setErrors((prev) => (
+        {
+          ...prev,
+          key: error.key,
+          message: error.message
+        }
+      ));
+      return;
     }
-    if (adhaarImage === 'front') {
-      setAdhaarFrontFile(file)
-    } else {
-      setAdhaarBackFile(file)
-    }
-  }
+    setFile(file);
+  };
 
 
   const [ocrResult, setOcrResult] = useState<OCRData | null>(null)
@@ -39,7 +54,7 @@ function App() {
     try {
 
       if (!adhaarFrontFile || !adhaarBackFile) {
-         setErrors({
+        setErrors({
           key: 'common',
           message: 'upload both side of the images'
         })
@@ -67,10 +82,12 @@ function App() {
           || apiError.statusCode === HttpStatusCode.PayloadTooLarge
           || apiError.statusCode === HttpStatusCode.InternalServerError
         ) {
-          setErrors({
-            key: apiError.error.key as fileType,
-            message: apiError.error.message
-          })
+          setErrors((prev)=>(
+            {
+              ...prev,
+                ...apiError.error as {key:fileType,message:string}
+            }
+          ))
         }
       }
 

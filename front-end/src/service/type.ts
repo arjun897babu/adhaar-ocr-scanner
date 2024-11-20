@@ -1,3 +1,4 @@
+import { ErrorObj } from "../App";
 import { OCRData } from "../pages/ocr-result/types";
 
 export interface ApiResponse {
@@ -10,8 +11,5 @@ export interface ApiErrorResponse {
   status: "error";
   message: string;
   statusCode: number;
-  error: {
-    key: string;
-    message: string;
-  };
+  error: ErrorObj;
 }

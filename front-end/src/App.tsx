@@ -10,19 +10,19 @@ import { handleAxiosError, isErrorResponse, validateFiles } from './utils/valida
 import { AxiosResponse, HttpStatusCode } from 'axios'
 import { ApiResponse } from './service/type'
 
-export type fileType = 'common' | 'adhaarFrontFile' | 'adhaarBackFile'
-
+export type FileType = 'common' | 'adhaarFrontFile' | 'adhaarBackFile'
+export type ErrorObj = { [key in FileType]: string }
 function App() {
 
   const [loading, setLoading] = useState(false)
   const [adhaarFrontFile, setAdhaarFrontFile] = useState<File | null>(null)
   const [adhaarBackFile, setAdhaarBackFile] = useState<File | null>(null)
-  const [errors, setErrors] = useState<{ key: fileType, message: string } | null>(null)
+  const [errors, setErrors] = useState<ErrorObj | null>(null)
 
   const updateAdhaarFile = (file: File, adhaarImage: ImageUploadProps['adhaarImage']) => {
     if (adhaarImage !== 'back' && adhaarImage !== 'front') return;
 
-    const fileType: fileType = adhaarImage === 'front' ?
+    const FileType: FileType = adhaarImage === 'front' ?
       'adhaarFrontFile'
       : 'adhaarBackFile';
 
@@ -30,14 +30,13 @@ function App() {
       setAdhaarFrontFile
       : setAdhaarBackFile;
 
-    const error = validateFiles(file, fileType);
+    const error = validateFiles(file, FileType);
 
     if (error) {
       setErrors((prev) => (
         {
           ...prev,
-          key: error.key,
-          message: error.message
+          ...error as ErrorObj
         }
       ));
       return;
@@ -54,10 +53,9 @@ function App() {
     try {
 
       if (!adhaarFrontFile || !adhaarBackFile) {
-        setErrors({
-          key: 'common',
-          message: 'upload both side of the images'
-        })
+        setErrors(
+          {['common']: 'upload both side of the images' } as ErrorObj
+        )
         return
       }
 
@@ -76,18 +74,16 @@ function App() {
     } catch (error) {
 
       const apiError = handleAxiosError(error)
-
       if (isErrorResponse(apiError)) {
         if (apiError.statusCode === HttpStatusCode.BadRequest
           || apiError.statusCode === HttpStatusCode.PayloadTooLarge
           || apiError.statusCode === HttpStatusCode.InternalServerError
         ) {
-          setErrors((prev)=>(
+          setErrors(
             {
-              ...prev,
-                ...apiError.error as {key:fileType,message:string}
+              ...apiError.error as ErrorObj
             }
-          ))
+          )
         }
       }
 

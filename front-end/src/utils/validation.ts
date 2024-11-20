@@ -1,6 +1,15 @@
 import { AxiosError, HttpStatusCode } from "axios";
 import { ApiErrorResponse } from "../service/type";
-import { fileType } from "../App";
+import { ErrorObj, FileType } from "../App";
+
+export function isErrorObj(obj: unknown): obj is ErrorObj {
+  const validKeys:FileType[] = ['adhaarBackFile','adhaarFrontFile','common']
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    Object.keys(obj).some((key) => validKeys.includes(key as FileType))
+  );
+ }
 
 export function isErrorResponse(error: unknown): error is ApiErrorResponse {
   return (
@@ -10,8 +19,7 @@ export function isErrorResponse(error: unknown): error is ApiErrorResponse {
     typeof error.statusCode === "number" &&
     "message" in error &&
     "status" in error &&
-    "error" in error &&
-    typeof error.error === "object"
+    "error" in error && isErrorObj(error.error)
   );
 }
 
@@ -32,10 +40,7 @@ export function handleAxiosError(error: unknown): ApiErrorResponse {
     statusCode: HttpStatusCode.InternalServerError,
     status: "error",
     message: "Something went wrong",
-    error: {
-      key: "unknown_error",
-      message: "An unexpected error occurred",
-    },
+    error: {'common':'An unexpected error occurred'},
   } as ApiErrorResponse;
 }
 function extractExtName(fileName: string): string {
@@ -44,13 +49,13 @@ function extractExtName(fileName: string): string {
 
 export function validateFiles(
   file: File,
-  fileName: fileType
-): { key: fileType; message: string }|null {
+  fileName: FileType
+): ErrorObj|null {
   const supportedImages = [".bmp", ".jpg", ".png", ".pbm", ".webp"];
   if (!file) {
-    return { key: fileName as fileType, message: "please upload image" };
+    return { [fileName]: "please upload image" } as ErrorObj ;
   } else if (!supportedImages.includes(extractExtName(file.name))) {
-    return { key: fileName as fileType, message: "unsupported image format" };
+    return { [fileName]: "unsupported image format" } as ErrorObj;
   } else{
     return null
   }

@@ -11,7 +11,7 @@ import { HttpStatusCode } from "./enum";
 
 export function validateFiles(files: MulterRequst["files"] | undefined) {
   let error: ErrorObj = {};
-  const supportedImages = [".bmp", ".jpg", ".png", ".pbm", ".webp"];
+  const supportedImages = [".jpg", ".jpeg", ".png", ".webp"];
   for (let fieldname in files) {
     const file = files[fieldname]?.[0];
     if (!file) {
@@ -39,10 +39,7 @@ function validateCard(ocrText: string) {
   }
 }
 
-function isAdhaarFront(
-  ocrText: string,
-  error: ErrorObj
-) {
+function isAdhaarFront(ocrText: string, error: ErrorObj) {
   try {
     validateCard(ocrText);
     if (extractGender(ocrText) === "" && extractDOB(ocrText) === "") {
